@@ -1,0 +1,36 @@
+version: '3.8'
+
+networks:
+  test-network:
+    external:
+      name: test-network
+
+services:
+  api:
+    container_name: api
+    image: devilbox/php-fpm:8.2-work
+    expose:
+      - 9000
+    volumes:
+      - ./:/var/projects
+    working_dir: /var/projects
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    networks:
+      - test-network
+
+  web:
+    container_name: web
+    image: node:22.1.0-alpine
+    expose:
+      - 3000
+    volumes:
+      - ./web:/var/projects/web
+    working_dir: /var/projects/web
+    tty: true
+    networks:
+      - test-network
+    entrypoint: [ "/bin/sh", "-c", "npm install && npm run dev" ]

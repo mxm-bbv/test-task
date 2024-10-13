@@ -1,0 +1,15 @@
+{
+  "token_hmac_secret_key": "517e98bb-d731-4961-958e-0ac30f556ee6",
+  "admin": true,
+  "admin_password": "4fdaae76-0e7b-4168-b0a9-1fba93ab2476",
+  "admin_secret": "aa3328e8-cb78-4bc9-b534-75375241a020",
+  "api_key": "aa820f48-664c-42d3-8111-fbac49992ffe",
+  "allow_subscribe_for_client": true,
+
+  "log_level": "debug",
+
+  "allowed_origins": [
+    "https://api.live.local:8000",
+    "http://api.live.local:8000"
+  ]
+}

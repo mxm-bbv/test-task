@@ -1,0 +1,20 @@
+api.live.local {
+    root * /var/projects/api/public
+    encode gzip zstd
+    file_server
+    php_fastcgi api:9000
+
+    # SSL
+    tls /data/local-certs/api.live.local.pem /data/local-certs/api.live.local-key.pem
+}
+
+live.local {
+    reverse_proxy web:3000
+
+    handle_path /api {
+        reverse_proxy api:9000/api
+    }
+
+    # SSL
+    tls /data/local-certs/live.local.pem /data/local-certs/live.local-key.pem
+}

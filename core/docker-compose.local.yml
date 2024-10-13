@@ -1,0 +1,88 @@
+version: '3.8'
+
+volumes:
+  caddy-config:
+  caddy-data:
+
+networks:
+  test-network:
+    driver: bridge
+    name: test-network
+
+services:
+  caddy:
+    container_name: server
+    image: caddy/caddy:2.7.2-alpine
+    restart: on-failure
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./local/caddy/:/etc/caddy/
+      - ./local/certs:/data/local-certs/
+      - caddy-config:/config
+      - caddy-data:/data
+      - ../projects:/var/projects
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    networks:
+      - test-network
+
+  database:
+    container_name: database
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: ${DB_USERNAME:-test}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-hello@world}
+      MYSQL_DATABASE: ${DB_DATABASE:-test}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-hello@world}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    networks:
+      - test-network
+
+  redis:
+    image: bitnami/redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    networks:
+      - test-network
+
+  centrifugo:
+    image: centrifugo/centrifugo:v5
+    container_name: centrifugo
+    volumes:
+      - ./local/centrifugo:/centrifugo
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    ports:
+      - "8081:8000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    networks:
+      - test-network
+    command: "centrifugo --config config.json"

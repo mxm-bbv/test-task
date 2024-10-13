@@ -1,0 +1,8 @@
+# Ignore .idea directory (JetBrains IDEs)
+.idea/
+
+# Ignore .git directory (Git)
+.git/
+
+# Ignore .vscode directory (VS Code)
+.vscode/
