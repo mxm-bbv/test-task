@@ -7,7 +7,7 @@ export const register = async () => {
     });
 
     if (response.ok) {
-        if (response.data.message !== "This IP already exists.") {
+        if (response.hasOwnProperty("message")) {
             console.log('Пользователь зарегистрирован:', response.data.message);
         }
         return response.data
